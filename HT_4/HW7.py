@@ -29,3 +29,4 @@ def iter_test(n):
 
 for elem in iter_test([1, 2, 3]):
 	print(elem)
+
