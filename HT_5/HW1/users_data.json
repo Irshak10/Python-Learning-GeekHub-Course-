@@ -7,17 +7,17 @@
 
 	{ "id": "2",
 	"firstName": "Valeriy",
-	"Password": "Qwerty123"
+	"password": "Qwerty123"
 	},
 	
 	{"id": "3",
 	"firstName": "Liudmila",
-	"Password": "Qwerty1234"
+	"password": "Qwerty1234"
 	},
 	
 	{ "id": "4",
 	"firstName": "Irina",
-	"Password": "Qwerty123456"
+	"password": "Qwerty123456"
 	}
 	]
 }
