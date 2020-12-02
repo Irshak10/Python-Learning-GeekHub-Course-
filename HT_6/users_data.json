@@ -1,0 +1,27 @@
+{"users": 
+	[
+	{"id": "1",
+	"firstName": "Roman",
+	"password": "Qwerty12345"
+	},
+
+	{"id": "2",
+	"firstName": "Valeriy",
+	"password": "Qwerty123"
+	},
+	
+	{"id": "3",
+	"firstName": "Liudmila",
+	"password": "Qwerty1234"
+	},
+	
+	{"id": "4",
+	"firstName": "Irina",
+	"password": "Qwerty123456"
+	},
+	{"id": "8",
+	"firstName": "Inc",
+	"password": "Inc"
+	}
+	]
+}
