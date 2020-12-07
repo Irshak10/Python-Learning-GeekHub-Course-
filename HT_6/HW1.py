@@ -44,26 +44,33 @@ def inc_balance():
 		banknote = json.load(f)
 	dic = {}
 	for i in banknote['nominals']:
-		dic[int(i['inc_sum'])] = int(i['n_sum'])
+		n_sum = int(i['n_sum'])
+		if n_sum > 0:
+			dic[int(i['inc_sum'])] = n_sum
 	return dic
 
 # Реалізація виводу коштів згідно з доступними банкнотами
-def withdraw(user_sum, banknote_data):
+def withdraw(user_sum):
 	finaly_sum = []
 	sort_nominals = sorted(inc_balance(), reverse=True)
 
 	while sum(finaly_sum) < user_sum:
-		next_iter = False
+		
 		for i in sort_nominals:
-			if next_iter:
-				break
+			i = [i]
 
-			elif i + sum(finaly_sum) <= user_sum:
-				for k in sort_nominals:
-					if (user_sum - sum(finaly_sum) - i) % k == 0:
-						finaly_sum.append(i)
-						next_iter = True
-						break
+			while True:
+
+				if sum(i) + sum(finaly_sum) <= user_sum:
+					for k in sort_nominals:
+						if (user_sum - sum(finaly_sum) - sum(i)) % k == 0:
+							finaly_sum += i
+							
+							break
+					else:
+						i.append(i[0])
+				else:
+					break		
 
 		if not finaly_sum:
 			print('Банкомат немає змоги видати вказану суму доступнимим купюрами')
@@ -113,9 +120,11 @@ def workflow(choose_number, user_id):
 				choose_number = str(start())
 		elif (choose_number == '3'):
 			possible = True
+			withdraw_sum = []
 			with open(f'balance{user_id}.json', 'r') as f:
 				user_balance = json.load(f)
 			if user_id == '11':
+				possible = False
 				print('Вивід коштів для інкасації недоступний')
 			else:	
 				minus_sum = int(input('Введіть суму, яку бажаєте вивести: '))
@@ -126,15 +135,17 @@ def workflow(choose_number, user_id):
 					with open(f'balance11.json', 'r') as f:
 						inc_balance11 = json.load(f)
 					for o in inc_balance11['nominals']:
-						for y in withdraw(minus_sum, inc_balance()):
+						withdraw_sum = withdraw(minus_sum)
+						for y in withdraw_sum:
 							if y == int(o['inc_sum']):
 								o['n_sum'] = str(int(o['n_sum']) - 1)
-								
 								if int(o['n_sum']) < 0:
 									o['n_sum'] = '0'
 									print('Банкомат немає змоги видати вказану суму доступнимим купюрами')
 									possible = False
 								break
+									
+					
 			if possible:				
 				user_balance = int(user_balance) - minus_sum
 				with open(f'balance11.json', 'w') as f:
@@ -143,7 +154,7 @@ def workflow(choose_number, user_id):
 						json.dump(user_balance,f)	
 				with open(f'{user_id}_transactions.data.json', 'a') as f:
 					json.dump(f'User removed {minus_sum} UAH | ',f) 
-				print(f'З балансу знято {minus_sum} UAH, Вам видано {withdraw(minus_sum, inc_balance())}\n')		
+				print(f'З балансу знято {minus_sum} UAH, Вам видано {withdraw_sum}\n')		
 			prestart_menu()
 			choose_number = str(start())
 		else:
