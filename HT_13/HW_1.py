@@ -48,7 +48,7 @@ def validat():
 	password = str(input('Введіть Ваш пароль: '))
 	with sqlite3.connect('bankomat.db') as db:
 		cursor = db.cursor()
-		data = cursor.execute(f"SELECT * from users_data WHERE login = '{login}' and password = '{password}'")
+		data = cursor.execute("SELECT * from users_data WHERE login = ? and password =?", (login, password))
 		
 		for i in data:
 			if login == i[1] and password == i[2]:
@@ -113,31 +113,36 @@ def workflow(choose_number, user_id):
 			else:
 				with sqlite3.connect('bankomat.db') as db:
 					cursor = db.cursor()
-					user_balance = cursor.execute(f"SELECT money FROM balance WHERE id = '{user_id}'")
+					user_balance = cursor.execute("SELECT money FROM balance WHERE id = ?", (str(user_id),))
 				print(f'Ваш баланс: {user_balance.fetchone()[0]}\n')
 				prestart_menu()
 				choose_number = (start())
 		elif (choose_number == '2'):
 			with sqlite3.connect('bankomat.db') as db:
 					cursor = db.cursor()
-					user_balance = cursor.execute(f"SELECT money FROM balance WHERE id = '{user_id}'")
-					
+					user_balance = cursor.execute("SELECT money FROM balance WHERE id =?", (str(user_id),))
+			
+
 			if user_id == 11:
 				inc_sum = int(input('Введіть номінал поповнення: '))
 				n_sum = int(input('Введіть кількість банкнот: '))
-				for y in user_balance['nominals']:
+
+				with open(f'balance{user_id}.json', 'r') as f:
+					inc_balance_inc = json.load(f)
+
+				for y in inc_balance_inc['nominals']:
 					if inc_sum == int(y['inc_sum']):
 						y['n_sum'] = str(int(y['n_sum']) + n_sum)
 						break
 				else:
-					user_balance['nominals'].append({'inc_sum': str(inc_sum), 'n_sum': str(n_sum)})
+					inc_balance_inc['nominals'].append({'inc_sum': str(inc_sum), 'n_sum': str(n_sum)})
 				with open(f'balance{user_id}.json', 'w') as f:
-					json.dump(user_balance,f)
+					json.dump(inc_balance_inc,f)
 				
 				save = f'INC added {inc_sum * n_sum} UAH - Amount {n_sum} banknotes on {inc_sum} UAH | '
 				with sqlite3.connect('bankomat.db') as db:
 					cursor = db.cursor()
-					cursor.execute(f"UPDATE users_data SET transactions_user = transactions_user ||'{save}' WHERE id = '{user_id}'")
+					cursor.execute("UPDATE users_data SET transactions_user = transactions_user || ? WHERE id = ?", (save, str(user_id)))
 					
 		
 				print(f'Баланс Банкомату поповнено на {inc_sum * n_sum} UAH\nІнкасацією внеcено {n_sum} банкнот по {inc_sum} UAH\n')
@@ -149,12 +154,12 @@ def workflow(choose_number, user_id):
 				save1 = f'User added {plus_sum} UAH | '
 				with sqlite3.connect('bankomat.db') as db:
 					cursor = db.cursor()
-					cursor.execute(f"UPDATE users_data SET transactions_user = transactions_user ||'{save1}' WHERE id = '{user_id}'")
+					cursor.execute("UPDATE users_data SET transactions_user = transactions_user || ? WHERE id = ?", (save1, str(user_id)))
 					
 
 				with sqlite3.connect('bankomat.db') as db:
 					cursor = db.cursor()
-					cursor.execute(f"UPDATE balance SET money = '{user_balance}' WHERE id = '{user_id}'")
+					cursor.execute("UPDATE balance SET money = ? WHERE id = ?", (user_balance, str(user_id)))
 					
 				# with open(f'balance{user_id}.json', 'w') as f:
 				# 	json.dump(user_balance,f)
@@ -163,17 +168,17 @@ def workflow(choose_number, user_id):
 				choose_number = str(start())
 		elif (choose_number == '3'):
 			possible = True
-			with sqlite3.connect('bankomat.db') as db:
-					cursor = db.cursor()
-					user_balance = cursor.execute(f"SELECT money FROM balance WHERE id = '{user_id}'")
-					user_balance = user_balance.fetchone()[0]
-						
+								
 			if user_id == 11:
 				print('Вивід коштів для інкасації недоступний')
 				choose_number = str(start())
 				possible = False
 
-			else:	
+			else:
+				with sqlite3.connect('bankomat.db') as db:
+					cursor = db.cursor()
+					user_balance = cursor.execute("SELECT money FROM balance WHERE id =?", (str(user_id),))
+					user_balance = user_balance.fetchone()[0]	
 				minus_sum = int(input('Введіть суму, яку бажаєте вивести: '))
 				if minus_sum > int(user_balance):
 					print('Недостатньо коштів для виводу')
@@ -181,8 +186,8 @@ def workflow(choose_number, user_id):
 
 				else:
 					with open(f'balance11.json', 'r') as f:
-						inc_balance11 = json.load(f)
-					for o in inc_balance11['nominals']:
+						inc_balance_inc = json.load(f)
+					for o in inc_balance_inc['nominals']:
 						for y in withdraw(minus_sum, inc_balance()):
 							if y == int(o['inc_sum']):
 								o['n_sum'] = str(int(o['n_sum']) - 1)
@@ -195,15 +200,15 @@ def workflow(choose_number, user_id):
 			if possible:		
 				user_balance = int(user_balance) - minus_sum
 				with open(f'balance11.json', 'w') as f:
-					json.dump(inc_balance11,f)
+					json.dump(inc_balance_inc,f)
 				with sqlite3.connect('bankomat.db') as db:
 					cursor = db.cursor()
-					cursor.execute(f"UPDATE balance SET money = '{user_balance}' WHERE id = '{user_id}'")	
+					cursor.execute("UPDATE balance SET money = ? WHERE id = ?", (user_balance, str(user_id)))
 				
 				save2 = f'User removed for balance {minus_sum} UAH | '
 				with sqlite3.connect('bankomat.db') as db:
 					cursor = db.cursor()
-					cursor.execute(f"UPDATE users_data SET transactions_user = transactions_user ||'{save2}' WHERE id = '{user_id}'")
+					cursor.execute("UPDATE users_data SET transactions_user = transactions_user ||? WHERE id = ?", (save2, str(user_id)))
 					
 				print(f'З балансу знято {minus_sum} UAH, Вам видано {withdraw(minus_sum, inc_balance())}\n')		
 			prestart_menu()
