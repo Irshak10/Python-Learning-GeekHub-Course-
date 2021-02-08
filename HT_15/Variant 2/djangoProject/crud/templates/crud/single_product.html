@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}
+    Product page #{{ single_product.id }}
+{% endblock%}
+
+{% block content %}
+
+ <div class="product-item">
+  <div class="product-list">
+    <h1>Product page #{{ single_product.id }}</h1>
+    <h3>Firm: {{ single_product.title }}, model: {{ single_product.model }}</h3>
+      <h4>Quantity: {{ single_product.quantity }}</h4>
+      <h5>Discription: {{ single_product.discription }}</h5>
+      <img src="{{ single_product.image }}" width="100" height="100" alt=""><br><br>
+      <span class="price">{{ single_product.price }} UAH |</span><br><br>
+
+      <br><br>
+      <form action='' method="post"> {% csrf_token %}
+        <p>
+        <input type="submit" name="action" value="delete">
+           {% if single_product.activation %}
+                <input type="submit" name="action" value="deactivate">
+            {% else %}
+                <input type="submit" name="action" value="activate">
+           {% endif %}
+        <input type="submit" name="action" value="add to cart">
+        </p>
+      </form>
+
+      <hr>
+
+      <form action="{% url 'leave_comment' single_product.id %}" method="POST">
+          {% csrf_token %}
+          <textarea name="text_comment" required="" placeholder="Text of the comment" cols="20" rows="10"></textarea><br>
+          <button type="submit"> Save your comment </button>
+      </form>
+    </div>
+  </div>
+
+ <hr>
+<strong>The last 10 comments: </strong>
+ {% if latest_10_comments %}
+          {% for com in latest_10_comments%}
+            <p>
+                {{ com.comment_text }}
+            </p>
+
+          {% endfor %}
+
+      {% else %}
+        <br>
+        Comments are not finded. Write something :)
+
+      {% endif %}
+ <hr>
+{% endblock%}

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Cart page
+{% endblock%}
+
+{% block content %}
+    <h3>Products in the Cart: {{ request.session.count_products}}</h3><hr>
+        {% for foo in entry %}
+
+            {{ foo.product.title }}<br>
+            {{ foo.product.model }}<br>
+            {{ foo.product.price }}<br>
+
+            <hr>
+        {% endfor %}
+    {% if request.session.count_products == 0 %}
+    {{ 'No product added' }}
+    {% endif %}
+
+    <form action='' method="post"> {% csrf_token %}<br>
+                <input type="hidden" name="single_id" value="{{ product_in_cart }}">
+                <input type="submit" name="action" value="delete all"><br>
+     </form>
+
+{% endblock %}
+
+
