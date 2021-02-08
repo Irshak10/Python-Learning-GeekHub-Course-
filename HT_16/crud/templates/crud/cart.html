@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}
+    Cart page
+{% endblock%}
+
+{% block content %}
+
+Products in the Cart: {{ request.session.cart_in_product.items|length}}<hr>
+    <ul>
+        {% for single_id, value in request.session.cart_in_product.items %}
+            <li>
+                Product:
+                <a href="{% url 'single_product' single_id%}">{{ value.title }}</a> ,
+                price: {{ value.price }} | added quantity = {{ value.added_qotap }}
+
+                    <form action='' method="post"> {% csrf_token %}<br>
+                        Variant 1:
+                        <input type="hidden" name="single_id" value="{{ single_id }}">
+                        {% if value.added_qotap < 1 %}
+                            <input type="submit" name="action" value="-" disabled="disabled">
+                        {% else %}
+                            <input type="submit" name="action" value="-"> |
+                        {% endif %}
+
+                        <input type="submit" name="action" value="delete"> |
+                        {% if value.quantity == value.added_qotap %}
+                            <input type="submit" name="action" value="+" disabled="disabled">
+                        {% else %}
+                            <input type="submit" name="action" value="+">
+                        {% endif %}
+                        <br><br>
+
+
+                        Variant 2:
+                        <input type="number" value="1" step="1" min="1" max='{{ value.quantity }}' name="qotap">
+                        <input type="submit" name="action" value="update">
+
+                    </form>
+                    <br>
+            </li>
+        {% endfor %}
+    </ul>
+
+
+{% endblock %}

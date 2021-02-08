@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}
+    Product page #{{ single_product.id }}
+{% endblock%}
+
+{% block content %}
+
+ <div class="product-item">
+    <div class="product-list">
+        <h1>Product page #{{ single_product.id }}</h1>
+            <form action='' method="post"> {% csrf_token %}
+                <input type="submit" name="action" value="delete">
+                {% if single_product.activation %}
+                    <input type="submit" name="action" value="deactivate">
+                {% else %}
+                    <input type="submit" name="action" value="activate">
+                {% endif %}
+                <br><br>
+                <input type="number" value="1" step="1" min="1" name="qotap">
+                <input type="submit" name="action" value="add to cart">
+            </form>
+        <hr>
+        <h3>Firm: {{ single_product.title }}, model: {{ single_product.model }}</h3>
+        <h4>Quantity: {{ single_product.quantity }}</h4>
+        <h5>Discription: {{ single_product.discription }}</h5>
+        <img src="{{ single_product.image }}" width="100" height="100" alt=""><br><br>
+        <span class="price">{{ single_product.price }} UAH |</span><br><br>
+        <h1>Tags:
+
+            {% for tag in single_product.tags.all %}
+                <a href="{{ tag.get_absolute_url }}"> {{ tag.title|title }}</a></h1>
+            {% endfor %}
+
+
+      {#<span class="publication_date">Date of publication: {{ single_product.publication_date }}</span>#}
+
+{#      {% if single_product.was_published_last_week %}#}
+{#          <em>It`s a new product!</em>#}
+{#      {% endif %}#}
+        <hr>
+
+          <form action="{% url 'leave_comment' single_product.id %}" method="POST">
+              {% csrf_token %}
+              <textarea name="text_comment" required="" placeholder="Text of the comment" cols="20" rows="10"></textarea><br>
+              <button type="submit"> Save your comment </button>
+          </form>
+    </div>
+ </div>
+ <hr>
+
+<strong>The last 10 comments: </strong>
+    {% if latest_10_comments %}
+        {% for com in latest_10_comments%}
+            <p>
+                {{ com.comment_text }}
+            </p>
+
+        {% endfor %}
+
+    {% else %}
+        <br>
+        Comments are not finded. Write something :)
+    {% endif %}
+
+{% endblock%}

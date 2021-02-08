@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}
+    All available products
+{% endblock %}
+
+{% block content %}
+    <h2>All available products:</h2>
+        {% for one_product in Products %}
+            {{ one_product.id}} {{ one_product.title}} {{ one_product.model}} {{ one_product.price }} {{ one_product.quantity}}
+            <a href="{% url 'single_product' single_id=one_product.id%}">In detail</a>
+            <img src="{{ one_product.image }}" width="50" height="50" alt=""> <br>
+        {% endfor %}
+{% endblock %}
+
+

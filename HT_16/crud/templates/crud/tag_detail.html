@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Tags list
+{% endblock%}
+
+{% block content %}
+    <h2>Product with "{{ tag.title|title }}" tag:</h2><hr>
+<li>
+    <ui>
+        {% for product in tag.products.all %}
+            {{ product.title }}<br>
+            {{ product.price }}<br>
+
+        {% endfor %}
+    </ui>
+
+</li>
+
+
+
+{% endblock%}
