@@ -6,11 +6,11 @@
 </head>
 <body>
 
-    <form>
-        <input type="text" placeholder="Choose category">
-        <input type="text" placeholder="Products quantity">
+    <form action="" method="POST">
+         {% csrf_token %}
+        <input type="text" name="category" placeholder="Choose category">
+        <input type="text" name="quantity" placeholder="Products quantity">
         <button type="submit"> Start </button>
-
     </form>
 
 
