@@ -6,27 +6,13 @@
 </head>
 <body>
 
-<form>
-    <input type="text" placeholder="Choose category">
-    <button type="submit"> Button </button>
+    <form>
+        <input type="text" placeholder="Choose category">
+        <input type="text" placeholder="Products quantity">
+        <button type="submit"> Start </button>
 
-</form>
+    </form>
 
-{% if data %}
-
-    {% for item in data %}
-        {{ item.category_1 }}<br>
-        {{ item.title }}<br>
-        {{ item.price }}<br>
-        <a>{{ item.href }}</a><br>
-        <a>{{ item.image }}</a><br>
-    {% endfor %}
-
-{% else %}
-    <h4>
-        Products are not finded
-    </h4>
-{% endif %}
 
 </body>
 </html>
