@@ -13,6 +13,14 @@
         <button type="submit"> Start </button>
     </form>
 
+{% for item in data %}
+    {{ item.finded_href }}
+    {{ item.name }}
+    {{ item.phone_num_finale }}
+    <hr>
+{% endfor %}
+
+
 
 </body>
 </html>
