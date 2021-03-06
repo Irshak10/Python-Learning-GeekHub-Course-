@@ -6,6 +6,7 @@
 </head>
 <body>
 
+<<<<<<< HEAD
 <form>
     <input type="text" placeholder="Choose category">
     <button type="submit"> Button </button>
@@ -27,6 +28,23 @@
         Products are not finded
     </h4>
 {% endif %}
+=======
+    <form action="" method="POST">
+         {% csrf_token %}
+        <input type="text" value="" name="category" placeholder="Choose category">
+        <input type="text" value="" name="pages" placeholder="Choose pages">
+        <button type="submit"> Start </button>
+    </form>
+
+{% for item in data %}
+    {{ item.finded_href }}
+    {{ item.name }}
+    {{ item.phone_num_finale }}
+    <hr>
+{% endfor %}
+
+
+>>>>>>> 1a6a5611d133c9ea51ed92d815af7073528d5d36
 
 </body>
 </html>
