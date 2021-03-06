@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scraper</title>
+</head>
+<body>
+
+    <form action="" method="POST">
+         {% csrf_token %}
+        <input type="text" value="" name="category" placeholder="Choose category">
+        <input type="text" value="" name="pages" placeholder="Choose pages">
+        <button type="submit"> Start </button>
+    </form>
+
+{% for item in data %}
+    {{ item.finded_href }}
+    {{ item.name }}
+    {{ item.phone_num_finale }}
+    <hr>
+{% endfor %}
+
+
+
+</body>
+</html>
